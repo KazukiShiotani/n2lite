@@ -63,7 +63,7 @@ class N2lite(object):
     
     def bytes_write(self, table_name, param, data, auto_commit = False):
         sql = "insert into {0} {1} values (?,?)".format(table_name, param)
-        self.con.exectemany(sql, data)
+        self.con.executemany(sql, data)
         return
 
     def writemany(self, table_name, param, values, auto_commit = False):
