@@ -41,7 +41,6 @@ class N2lite(object):
         """
         s = str(list(param.items()))[1:-1]
         s = re.sub("(',)","'", s)
-        print(s)
         self.con.execute("CREATE table if not exists {} ({})".format(table_name, s))
         return
 
