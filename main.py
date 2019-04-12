@@ -57,6 +57,8 @@ class N2lite(object):
         """
         if isinstance(values,list):
             values = tuple(values)
+            if len(values) == 1:
+                pass
         if auto_commit:
             with self.con:
                 self.con.execute("INSERT into {0} {1} values {2}".format(table_name, param, values))
