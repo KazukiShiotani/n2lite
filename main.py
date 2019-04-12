@@ -2,7 +2,7 @@
 
 import sqlite3
 import pandas
-
+import re
 
 class N2lite(object):
     
@@ -37,9 +37,12 @@ class N2lite(object):
         """
         example:
             table_name = "SIS_VOLTAGE"
-            param = "('2l' float, '2r' float, time float, ... )"
+            param = {"param1":"float", "param2":"float"}
         """
-        self.con.execute("CREATE table if not exists {} {}".format(table_name, param))
+        s = str(list(param.items()))[1:-1]
+        s = re.sub("(',)","'", s)
+        print(s)
+        self.con.execute("CREATE table if not exists {} ({})".format(table_name, s))
         return
 
     def write(self, table_name, param, values, auto_commit = False):
@@ -47,11 +50,13 @@ class N2lite(object):
         example:
             table_name = "SIS_VOLTAGE"
             param = "('2l', '2r')" or '' (all param write)
-            values = "(1.0, 2.0)"
+            values = "(1.0, 2.0)" or [1.0, 2.0]
 
             if autocommit = False, you must call commit_data function 
                 after calling write function.
         """
+        if isinstance(values,list):
+            values = tuple(values)
         if auto_commit:
             with self.con:
                 self.con.execute("INSERT into {0} {1} values {2}".format(table_name, param, values))
@@ -76,6 +81,7 @@ class N2lite(object):
 
             if value's type = list, need  ",".join(map(str, value)).
         """
+        
         if auto_commit:
             with self.con:
                 self.con.execute("INSERT into {0} {1} values {2}".format(table_name, param, values))
