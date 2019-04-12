@@ -39,10 +39,11 @@ class N2lite(object):
             table_name = "SIS_VOLTAGE"
             param = {"param1":"float", "param2":"float"}
         """
-        s = str(list(param.items()))[1:-1]
-        s = re.sub("(',)","'", s)
-        self.con.execute("CREATE table if not exists {} ({})".format(table_name, s))
-        return
+        sql_param = str(param)[1:-1]
+        sql_param = re.sub(":","",sql_param)
+        sql_param = "({})".format(sql_param)
+        self.con.execute("CREATE table if not exists {} {}".format(table_name, sql_param))
+        pass
 
     def write(self, table_name, param, values, auto_commit = False):
         """
