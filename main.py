@@ -28,6 +28,11 @@ class N2lite(object):
     def close(self):
         self.con.close()
         return
+    
+    def write_blob(self, table_name, param):#tmp
+        with self.con:
+            self.con.execute("insert into {} values (?,?)".format(table_name), param)
+        pass
 
     def commit_data(self):
         self.con.commit()
@@ -150,3 +155,14 @@ class N2lite(object):
         name = self.con.execute("SELECT name from sqlite_master where type='table'").fetchall()
         name_list = [name[i][0] for i in range(len(name))]
         return name_list
+
+class xffts_logger(N2lite):
+    def __init__(self, dbpath):
+        super().__init__(dbpath)
+        pass
+    
+
+    def write_blob(self, table_name, param):#tmp                                                      
+        with self.con:
+            self.con.execute("insert into {} values (?,?)".format(table_name), param)
+
