@@ -157,7 +157,18 @@ class xffts_logger(N2lite):
         pass
     
 
-    def write_blob(self, table_name, param):#tmp                                                      
+    def write_blob(self, table_name, param):#tmp                                                   
         with self.con:
             self.con.execute("insert into {} values (?,?)".format(table_name), param)
+
+    def read_as_timestamp(self, table_name, where, param="*"):
+        row = self.con.execute("SELECT {0} from {1} where timestamp < {2}".format(param, table_name, where)).fetchall()
+        if not row == []:
+            data = [
+                [row[i][j] for i in range(len(row))] 
+                    for j in range(len(row[0]))
+                    ]
+        else : data = []
+        return data
+        
 
