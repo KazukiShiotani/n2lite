@@ -4,7 +4,7 @@ import sqlite3
 import pandas
 import re
 
-class N2lite(object):
+class N2lite():
     
     def __init__(self, dbpath):
         """
