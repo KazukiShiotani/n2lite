@@ -29,11 +29,6 @@ class N2lite(object):
         self.con.close()
         return
     
-    def write_blob(self, table_name, param):#tmp
-        with self.con:
-            self.con.execute("insert into {} values (?,?)".format(table_name), param)
-        pass
-
     def commit_data(self):
         self.con.commit()
         return
