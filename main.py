@@ -108,14 +108,19 @@ class N2lite():
         else : data = []
         return data
 
-    def read_as_pandas(self, table_name):
+    def read_as_pandas(self, table_name, where = ""):
         """
         example:
             table_name = "SIS_VOLTAGE"
         return:
             pandas.core.frame.DataFrame
         """
-        df = pandas.read_sql("SELECT * from {}".format(table_name), self.con)
+        if where == "":
+            sql = "SELECT * from {}"
+            df = pandas.read_sql(sql.format(table_name), self.con)
+        else:
+            sql = "SELECT * from {} where {}"
+            df = pandas.read_sql(sql.format(table_name, where), self.con)
         return df
 
     def read_pandas_all(self):
@@ -161,8 +166,8 @@ class xffts_logger(N2lite):
         with self.con:
             self.con.execute("insert into {} values (?,?)".format(table_name), param)
 
-    def read_as_timestamp(self, table_name, where, param="*"):
-        row = self.con.execute("SELECT {0} from {1} where timestamp < {2}".format(param, table_name, where)).fetchall()
+    def read_as_timestamp(self, table_name, timestamp1, timestamp2, param="*"):
+        row = self.con.execute("SELECT {0} from {1} where timestamp < {2} and timestamp > {3}".format(param, table_name, where)).fetchall()
         if not row == []:
             data = [
                 [row[i][j] for i in range(len(row))] 
