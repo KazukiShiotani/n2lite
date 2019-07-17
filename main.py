@@ -15,9 +15,9 @@ class N2lite():
         self.con = sqlite3.connect(self.dbpath, check_same_thread=False)
         pass
     
-    def __del__(self):
-        self.con.close()
-        return
+   # def __del__(self):
+   #     self.con.close()
+   #     return
     
     def open(self):
         """
@@ -162,12 +162,29 @@ class xffts_logger(N2lite):
         pass
     
 
-    def write_blob(self, table_name, param):#tmp                                                   
-        with self.con:
+    def write_blob(self, table_name, param, auto_commit = False):#tmp
+        if auto_commit:
+            with self.con:
+                self.con.execute("insert into {} values (?,?)".format(table_name), param)
+        else:
             self.con.execute("insert into {} values (?,?)".format(table_name), param)
 
-    def read_as_timestamp(self, table_name, timestamp1, timestamp2, param="*"):
-        row = self.con.execute("SELECT {0} from {1} where timestamp < {2} and timestamp > {3}".format(param, table_name, where)).fetchall()
+    def write_blob2(self, table_name, param, auto_commit = False):#tmp
+        if auto_commit:
+            with self.con:
+                self.con.executemany("insert into {} values (?,?,?,?)".format(table_name), param)
+        else:
+            self.con.executemany("insert into {} values (?,?,?,?)".format(table_name), param)
+
+    def write_blob3(self, table_name, param, auto_commit = False):#tmp
+        if auto_commit:
+            with self.con:
+                self.con.executemany("insert into {} values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)".format(table_name), param)
+        else:
+            self.con.executemany("insert into {} values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)".format(table_name), param)
+    def read_as_timestamp(self, table_name, where, param="*"):
+        #row = self.con.execute("SELECT {0} from {1} where timestamp < {2} and timestamp > {3}".format(param, table_name, where)).fetchall()
+        row = self.con.execute("SELECT {0} from {1} where timestamp < {2}".format(param, table_name, where)).fetchall()
         if not row == []:
             data = [
                 [row[i][j] for i in range(len(row))] 
